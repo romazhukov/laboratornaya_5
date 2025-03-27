@@ -8,18 +8,12 @@ import org.example.utils.Printable;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+@AllArgsConstructor
 public class RuntimeManager implements Runnable {
     private final Printable consoleOutput;
     private final InputReader consoleInput;
     private final CommandManager commandManager;
     private final FileManager fileManager;
-
-    public RuntimeManager(Printable consoleOutput, InputReader consoleInput, CommandManager commandManager, FileManager fileManager) {
-        this.consoleOutput = consoleOutput;
-        this.consoleInput = consoleInput;
-        this.commandManager = commandManager;
-        this.fileManager = fileManager;
-    }
 
     @Override
     public void run() {

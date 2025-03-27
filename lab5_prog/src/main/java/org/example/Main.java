@@ -1,6 +1,9 @@
 package org.example;
 
 import org.example.command.*;
+import org.example.command.commands.HelpCommand;
+import org.example.command.commands.InfoCommand;
+import org.example.command.commands.ShowCommand;
 import org.example.managers.*;
 
 import java.io.File;
@@ -19,6 +22,15 @@ public class Main {
         FileManager fileManager = new FileManager(new File(args[0]), consoleOutput);
 
         if (!fileManager.validate()) return;
+
+        fileManager.deserializeCollectionFromXML();
+
+        ArrayList<Command> commands = new ArrayList<>(Arrays.asList(
+                new HelpCommand(commandManager, consoleOutput),
+                new InfoCommand(consoleOutput, collectionManager),
+                new ShowCommand(consoleOutput)
+        ));
+        commandManager.addCommands(commands);
 
         RuntimeManager runtimeManager = new RuntimeManager(consoleOutput, consoleInput, commandManager, fileManager);
         runtimeManager.run();
