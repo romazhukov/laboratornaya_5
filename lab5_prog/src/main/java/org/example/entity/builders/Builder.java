@@ -39,7 +39,7 @@ public abstract class Builder<T> {
 
     /**
      * Получение строкового значения. До тех пор, пока не получится валидное.
-     * Для дальнейших аналогичных типов данных сигнатура будет той же, поэтому описание параметров я напишу только в этом методе
+     * Для дальнейших аналогичных типов данных сигнатура будет +- той же, поэтому описание параметров я напишу только в этом методе
      * @param valueName название поля для заполнения
      * @param valueInfo дополнительная информация, требования для поля и тд
      * @param validateRule предикат (лямбда), описывающий правило валидации значения
@@ -74,9 +74,9 @@ public abstract class Builder<T> {
         while (true) {
             consoleOutput.print(String.format("%s (%s)\n%s\n> ", valueName, valueInfo, Arrays.toString(enumClass.getEnumConstants())));
             try {
+                T value = null;
                 String input = consoleInput.readLine().trim();
-                if (input.isBlank()) return null;
-                T value = Enum.valueOf(enumClass, input.toUpperCase());
+                if (!input.isBlank()) value = Enum.valueOf(enumClass, input.toUpperCase());
                 if (validateRule.test(value)) return value;
                 consoleOutput.printError("Введенное значение не удовлетворяет одному или нескольким условиям валидации поля \"" + valueName + "\". " + errorMessage);
 
@@ -140,7 +140,7 @@ public abstract class Builder<T> {
 
     public boolean askBoolean(String valueName) {
         while (true) {
-            consoleOutput.print(String.format("%s?\nДА=(\"1\", \"+\", \"on\", \"y\", \"yes\", \"t\", \"true\"); \nНЕТ=(\"0\", \"-\", \"off\", \"n\", \"no\", \"not\", \"f\", \"false\")\n> ", valueName));
+            consoleOutput.print(String.format("%s?\nДА=(\"1\", \"+\", \"y\", \"yes\", \"t\", \"true\"); \nНЕТ=(\"0\", \"-\", \"n\", \"no\", \"not\", \"f\", \"false\")\n> ", valueName));
             String input = consoleInput.readLine();
             if (input != null) input = input.trim().toLowerCase();
             if (Builder.trueWords.contains(input)) {
@@ -152,5 +152,7 @@ public abstract class Builder<T> {
             consoleOutput.printError("Что непонятного?! Скажите ДА или НЕТ одним из разрешенных способов!");
         }
     }
+
+    // TODO: dropIfFileMode
 
 }

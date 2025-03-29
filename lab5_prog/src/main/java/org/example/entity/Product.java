@@ -13,6 +13,7 @@ import java.util.Date;
  */
 @Getter
 public class Product implements Validatable, Comparable<Product> {
+    @Setter
     private Long id; //Поле не может быть null, Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
 
     @Setter
@@ -68,7 +69,7 @@ public class Product implements Validatable, Comparable<Product> {
 
     @Override
     public int compareTo(Product product) {
-        return this.creationDate.compareTo(product.creationDate);
+        return Long.compare(this.price, product.price);
     }
 
     @Override

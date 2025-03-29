@@ -6,6 +6,7 @@ import org.example.managers.CollectionManager;
 import org.example.utils.Printable;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Класс команды show
@@ -33,7 +34,7 @@ public class ShowCommand extends Command {
         consoleOutput.println("Элементы коллекции в порядке возростания приоритета:");
         collection.entrySet()
                 .stream()
-                .sorted()
-                .forEach(entry -> consoleOutput.println("[KEY: " + entry.getKey() + "]\n" + entry.getValue()));
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(entry -> consoleOutput.println("[KEY: " + entry.getKey() + "] " + entry.getValue()));
     }
 }

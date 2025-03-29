@@ -1,7 +1,6 @@
 package org.example.managers;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.thoughtworks.xstream.XStream;
 import lombok.Getter;
 import org.example.command.ConsoleOutput;
 import org.example.entity.Product;
@@ -9,7 +8,9 @@ import org.example.utils.Validatable;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -19,6 +20,7 @@ public class FileManager implements Validatable {
     @Getter
     private final File file;
     private final ConsoleOutput consoleOutput;
+    private final XStream xStream = new XStream();
 
     public FileManager(File file, ConsoleOutput consoleOutput) {
         this.file = file;
@@ -55,15 +57,12 @@ public class FileManager implements Validatable {
 
     /**
      * Сериализация коллекции в XML с помощью BufferedWriter
-     * @param collection коллекция
      * @throws FileNotFoundException если файл не найден (программа гарантирует наличие файла)
      */
-    public void serializeCollectionToXML(HashMap<String, Product> collection) throws FileNotFoundException {
+    public void serializeCollectionToXML() throws FileNotFoundException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            XmlMapper xmlMapper = new XmlMapper();
-            xmlMapper.registerModule(new JavaTimeModule());
+            writer.write(xStream.toXML(CollectionManager.getCollection()));
 
-            writer.write(xmlMapper.writeValueAsString(collection));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -75,29 +74,24 @@ public class FileManager implements Validatable {
      */
     public void deserializeCollectionFromXML() {
         try (FileInputStream fileInputStream = new FileInputStream(file);
-             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
-            StringBuilder xml = new StringBuilder();
+            String xml = "";
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                xml.append(line);
+                xml += line;
             }
 
             // проверяем пуст ли XML
             if (xml.toString().isEmpty()) {
-                consoleOutput.printError("Файл XML пустой. Используется пустая коллекция.");
+                consoleOutput.println("Файл XML пустой. Используется пустая коллекция.");
                 CollectionManager.setCollection(new HashMap<>());
                 return;
             }
 
-            XmlMapper xmlMapper = new XmlMapper();
-            xmlMapper.registerModule(new JavaTimeModule());
-
-            HashMap<String, Product> xmlCollection = xmlMapper.readValue(
-                    xml.toString(),
-                    xmlMapper.getTypeFactory().constructMapType(HashMap.class, String.class, Product.class)
-            );
+            xStream.allowTypes(new Class[]{Product.class}); // чтобы разрешить десериализацию пользовательских классов
+            HashMap<String, Product> xmlCollection = (HashMap<String, Product>) xStream.fromXML(xml);
 
             if (!CollectionManager.setCollection(xmlCollection)) {
                 throw new IOException("Одно или несколько полей не прошли валидацию");

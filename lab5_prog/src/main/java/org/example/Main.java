@@ -1,9 +1,7 @@
 package org.example;
 
 import org.example.command.*;
-import org.example.command.commands.HelpCommand;
-import org.example.command.commands.InfoCommand;
-import org.example.command.commands.ShowCommand;
+import org.example.command.commands.*;
 import org.example.managers.*;
 
 import java.io.File;
@@ -28,7 +26,14 @@ public class Main {
         ArrayList<Command> commands = new ArrayList<>(Arrays.asList(
                 new HelpCommand(commandManager, consoleOutput),
                 new InfoCommand(consoleOutput, collectionManager),
-                new ShowCommand(consoleOutput)
+                new ShowCommand(consoleOutput),
+                new InsertCommand(consoleOutput, consoleInput, collectionManager),
+                new UpdateCommand(consoleInput, consoleOutput, collectionManager),
+                new RemoveKeyCommand(consoleOutput, collectionManager),
+                new ClearCommand(consoleOutput, collectionManager),
+                new SaveCommand(consoleOutput, fileManager),
+                new RemoveGreaterCommand(collectionManager, consoleOutput, consoleInput),
+                new ExitCommand(consoleOutput)
         ));
         commandManager.addCommands(commands);
 

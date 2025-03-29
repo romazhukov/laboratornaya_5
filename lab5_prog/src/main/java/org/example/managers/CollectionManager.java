@@ -136,4 +136,21 @@ public class CollectionManager {
         }
         return true;
     }
+
+    /**
+     * Удаление элемента по его id
+     * @param id id
+     * @return ключ по которому произошло изменение иначе null
+     */
+    public String removeById(long id) {
+        Iterator<Map.Entry<String, Product>> iterator = collection.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Product> entry = iterator.next();
+            if (entry.getValue().getId() == id) {
+                iterator.remove();
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }
