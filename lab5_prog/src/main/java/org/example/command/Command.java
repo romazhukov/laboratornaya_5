@@ -21,7 +21,7 @@ public abstract class Command implements CommandInterface {
 
     @Override
     public String toString() {
-        return String.format("- %-30s  %s", name, description);
+        return String.format("- %-35s  %s", name, description);
     }
 
 }

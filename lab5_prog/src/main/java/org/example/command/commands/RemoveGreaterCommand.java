@@ -29,6 +29,11 @@ public class RemoveGreaterCommand extends Command {
 
     @Override
     public void execute(String[] args) {
+        if (args.length != 0) {
+            consoleOutput.printError("Команда не принимает аргументов");
+            return;
+        }
+
         Product newProduct = new ProductBuilder(consoleOutput, consoleInput).build();
         HashMap<String, Product> toRemove = CollectionManager.getCollection()
                 .entrySet().stream()

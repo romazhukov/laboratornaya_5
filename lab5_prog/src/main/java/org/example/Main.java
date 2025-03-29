@@ -33,7 +33,11 @@ public class Main {
                 new ClearCommand(consoleOutput, collectionManager),
                 new SaveCommand(consoleOutput, fileManager),
                 new RemoveGreaterCommand(collectionManager, consoleOutput, consoleInput),
-                new ExitCommand(consoleOutput)
+                new ExitCommand(consoleOutput),
+                new ReplaceIfLowerCommand(collectionManager, consoleInput, consoleOutput),
+                new RemoveLowerKey(consoleOutput),
+                new CountLessThanManufactureCostCommand(consoleOutput),
+                new FilterGreaterThanPartNumberCommand(consoleOutput)
         ));
         commandManager.addCommands(commands);
 
