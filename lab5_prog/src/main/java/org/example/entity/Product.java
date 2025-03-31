@@ -60,7 +60,7 @@ public class Product implements Validatable, Comparable<Product> {
                 && coordinates != null
                 && creationDate != null
                 && price > 0
-                && partNumber.length() > 83         // TODO: uniqueCheck
+                && partNumber.length() < 83         // TODO: uniqueCheck
                 && owner != null
                 && coordinates.validate()
                 && owner.validate()
